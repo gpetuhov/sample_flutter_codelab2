@@ -46,25 +46,37 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
         // Set elevation depending on current platform
         elevation: Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
       ),
-      body: Column(
-        children: <Widget>[
-          Flexible(
-            child: ListView.builder(
-              padding: EdgeInsets.all(8.0),
-              reverse: true,
-              // Naming the argument "_" is a convention to indicate that it won't be used
-              itemBuilder: (_, int index) => _messages[index],
-              itemCount: _messages.length,
+      // This Container widget is needed to give its child a light grey border on its upper edge.
+      // This border will help visually distinguish the app bar from the body of the app on iOS.
+      // To hide the border on Android, set decoration to null on Android.
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            Flexible(
+              child: ListView.builder(
+                padding: EdgeInsets.all(8.0),
+                reverse: true,
+                // Naming the argument "_" is a convention to indicate that it won't be used
+                itemBuilder: (_, int index) => _messages[index],
+                itemCount: _messages.length,
+              ),
             ),
-          ),
-          Divider(height: 1.0),
-          Container(
-            // BoxDecoration object defines the background color.
-            // In this case we're using the cardColor defined by the ThemeData object of the current theme.
-            decoration: BoxDecoration(color: Theme.of(context).cardColor),
-            child: _buildTextComposer(),
-          ),
-        ],
+            Divider(height: 1.0),
+            Container(
+              // BoxDecoration object defines the background color.
+              // In this case we're using the cardColor defined by the ThemeData object of the current theme.
+              decoration: BoxDecoration(color: Theme.of(context).cardColor),
+              child: _buildTextComposer(),
+            ),
+          ],
+        ),
+        decoration: Theme.of(context).platform == TargetPlatform.iOS
+            ? BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: Colors.grey[200]),
+                ),
+              )
+            : null,
       ),
     );
   }
