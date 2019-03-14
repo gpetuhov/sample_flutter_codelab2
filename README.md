@@ -1,16 +1,11 @@
 # sample_flutter_codelab2
-
 Learning Flutter basics with the second Flutter Codelab.
 
-## Getting Started
+## Notes
+* Flutter Plugin doesn't work on Android Studio Canary versions
+* If Android Studio can't find Dart SDK then provide path to it in Settings: path_to_flutter_folder/bin/cache/dart-sdk
+* To format text (if needed): Right-click the dart code and select Reformat Code with dartfmt
+* To add external packages: edit pubspec.yaml file and click Packages get and import package in main.dart
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
-
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+## References
+https://codelabs.developers.google.com/codelabs/flutter/#0
