@@ -1,5 +1,5 @@
 # sample_flutter_codelab2
-Learning Flutter basics with the second Flutter Codelab.
+Learning Flutter basics with the second Flutter Codelab. Building simple chat UI.
 
 ## Notes
 * Flutter Plugin doesn't work on Android Studio Canary versions
