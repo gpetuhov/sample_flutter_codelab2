@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 void main() {
   runApp(FriendlychatApp());
@@ -9,6 +10,10 @@ class FriendlychatApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Friendlychat",
+      // Customize theme depending on the current platform
+      theme: defaultTargetPlatform == TargetPlatform.iOS
+          ? kIOSTheme
+          : kDefaultTheme,
       home: ChatScreen(),
     );
   }
@@ -35,7 +40,11 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Friendlychat")),
+      appBar: AppBar(
+        title: Text("Friendlychat"),
+        // Set elevation depending on current platform
+        elevation: Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
+      ),
       body: Column(
         children: <Widget>[
           Flexible(
@@ -111,14 +120,14 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
             Container(
               margin: EdgeInsets.symmetric(horizontal: 4.0),
               child: IconButton(
-                  icon: Icon(Icons.send),
-                  // This is triggered on button pressed.
-                  // TextEditingController keeps entered text.
-                  // Set function to be triggered, if _isComposing == true only.
-                  // If widget's onPressed property is set to null, button will be disabled
-                  // and the framework will automatically change the button's color
-                  // to Theme.of(context).disabledColor.
-                  onPressed: _isComposing
+                icon: Icon(Icons.send),
+                // This is triggered on button pressed.
+                // TextEditingController keeps entered text.
+                // Set function to be triggered, if _isComposing == true only.
+                // If widget's onPressed property is set to null, button will be disabled
+                // and the framework will automatically change the button's color
+                // to Theme.of(context).disabledColor.
+                onPressed: _isComposing
                     ? () => _handleSubmitted(_textController.text)
                     : null,
               ),
@@ -219,3 +228,16 @@ class ChatMessage extends StatelessWidget {
 }
 
 const String _name = "User Name";
+
+// Theme for iOS
+final ThemeData kIOSTheme = new ThemeData(
+  primarySwatch: Colors.orange,
+  primaryColor: Colors.grey[100],
+  primaryColorBrightness: Brightness.light,
+);
+
+// Theme for Android
+final ThemeData kDefaultTheme = new ThemeData(
+  primarySwatch: Colors.purple,
+  accentColor: Colors.orangeAccent[400],
+);
