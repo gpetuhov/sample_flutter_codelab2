@@ -23,6 +23,9 @@ class ChatScreenState extends State<ChatScreen> {
   // TextEditingController is used to manage interactions with the text field
   final TextEditingController _textController = TextEditingController();
 
+  // Stores chat messages
+  final List<ChatMessage> _messages = <ChatMessage>[];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,6 +84,18 @@ class ChatScreenState extends State<ChatScreen> {
   void _handleSubmitted(String text) {
     // TextField clear is done by TextEditingController
     _textController.clear();
+
+    ChatMessage message = ChatMessage(
+      text: text,
+    );
+
+    setState(() {
+      // Only synchronous operations should be performed in setState(),
+      // because otherwise the framework could rebuild the widgets before the operation finishes
+
+      // New message goes first
+      _messages.insert(0, message);
+    });
   }
 }
 
