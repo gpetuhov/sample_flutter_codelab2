@@ -29,6 +29,9 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   // Stores chat messages
   final List<ChatMessage> _messages = <ChatMessage>[];
 
+  // true if input text is not empty
+  bool _isComposing = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,6 +95,12 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
               // TextField handles the mutable text content
               child: TextField(
                 controller: _textController,
+                // This is triggered every time text changes
+                onChanged: (String text) {
+                  setState(() {
+                    _isComposing = text.length > 0;
+                  });
+                },
                 onSubmitted:
                     _handleSubmitted, // this is triggered when pressing OK on the keyboard
                 decoration:
@@ -105,7 +114,14 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                   icon: Icon(Icons.send),
                   // This is triggered on button pressed.
                   // TextEditingController keeps entered text.
-                  onPressed: () => _handleSubmitted(_textController.text)),
+                  // Set function to be triggered, if _isComposing == true only.
+                  // If widget's onPressed property is set to null, button will be disabled
+                  // and the framework will automatically change the button's color
+                  // to Theme.of(context).disabledColor.
+                  onPressed: _isComposing
+                    ? () => _handleSubmitted(_textController.text)
+                    : null,
+              ),
             ),
           ],
         ),
@@ -116,6 +132,11 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   void _handleSubmitted(String text) {
     // TextField clear is done by TextEditingController
     _textController.clear();
+
+    // This is needed to "disable" send button after send message
+    setState(() {
+      _isComposing = false;
+    });
 
     ChatMessage message = ChatMessage(
       text: text,
