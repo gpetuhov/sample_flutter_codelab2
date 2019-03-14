@@ -191,19 +191,25 @@ class ChatMessage extends StatelessWidget {
               margin: const EdgeInsets.only(right: 16.0),
               child: CircleAvatar(child: Text(_name[0])),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                // For messages, the parent is a Column widget whose main axis is vertical,
-                // so CrossAxisAlignment.start aligns the text at the furthest left position
-                // along the horizontal axis.
-                // Using current theme allows us to avoid hard-coding font sizes and other text attributes.
-                Text(_name, style: Theme.of(context).textTheme.subhead),
-                Container(
-                  margin: const EdgeInsets.only(top: 5.0),
-                  child: Text(text),
-                ),
-              ],
+            // This is needed to wrap longer lines.
+            // Expanded allows a widget like Column to impose layout constraints
+            // (in this case the Column's width), on a child widget.
+            // Here it constrains the width of the Text widget, which is normally determined by its contents.
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  // For messages, the parent is a Column widget whose main axis is vertical,
+                  // so CrossAxisAlignment.start aligns the text at the furthest left position
+                  // along the horizontal axis.
+                  // Using current theme allows us to avoid hard-coding font sizes and other text attributes.
+                  Text(_name, style: Theme.of(context).textTheme.subhead),
+                  Container(
+                    margin: const EdgeInsets.only(top: 5.0),
+                    child: Text(text),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
