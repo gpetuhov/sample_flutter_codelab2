@@ -30,7 +30,26 @@ class ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Friendlychat")),
-      body: _buildTextComposer(),
+      body: Column(
+        children: <Widget>[
+          Flexible(
+            child: ListView.builder(
+              padding: EdgeInsets.all(8.0),
+              reverse: true,
+              // Naming the argument "_" is a convention to indicate that it won't be used
+              itemBuilder: (_, int index) => _messages[index],
+              itemCount: _messages.length,
+            ),
+          ),
+          Divider(height: 1.0),
+          Container(
+            // BoxDecoration object defines the background color.
+            // In this case we're using the cardColor defined by the ThemeData object of the current theme.
+            decoration: BoxDecoration(color: Theme.of(context).cardColor),
+            child: _buildTextComposer(),
+          ),
+        ],
+      ),
     );
   }
 
@@ -100,7 +119,6 @@ class ChatScreenState extends State<ChatScreen> {
 }
 
 class ChatMessage extends StatelessWidget {
-
   ChatMessage({this.text});
 
   final String text;
