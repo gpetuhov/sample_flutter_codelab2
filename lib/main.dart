@@ -38,11 +38,30 @@ class ChatScreenState extends State<ChatScreen> {
       // The units here are logical pixels that get translated into
       // a specific number of physical pixels, depending on a device's pixel ratio.
       margin: const EdgeInsets.symmetric(horizontal: 8.0),
-      // TextField handles the mutable text content
-      child: TextField(
-        controller: _textController,
-        onSubmitted: _handleSubmitted,
-        decoration: InputDecoration.collapsed(hintText: "Send a message"),
+      // We need Row to display the button adjacent to the input field
+      child: Row(
+        children: <Widget>[
+          // Flexible tells the Row to automatically size the text field
+          // to use the remaining space that isn't used by the button.
+          Flexible(
+            // TextField handles the mutable text content
+            child: TextField(
+              controller: _textController,
+              onSubmitted: _handleSubmitted,  // this is triggered when pressing OK on the keyboard
+              decoration: InputDecoration.collapsed(hintText: "Send a message"),
+            ),
+          ),
+          // We place send button inside the Container to specify margins
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 4.0),
+            child: IconButton(
+                icon: Icon(Icons.send),
+                // This is triggered on button pressed.
+                // TextEditingController keeps entered text.
+                onPressed: () => _handleSubmitted(_textController.text)
+            ),
+          ),
+        ],
       ),
     );
   }
