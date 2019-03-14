@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/cupertino.dart';
 
 void main() {
   runApp(FriendlychatApp());
@@ -118,20 +119,27 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
             ),
             // We place send button inside the Container to specify margins
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 4.0),
-              child: IconButton(
-                icon: Icon(Icons.send),
-                // This is triggered on button pressed.
-                // TextEditingController keeps entered text.
-                // Set function to be triggered, if _isComposing == true only.
-                // If widget's onPressed property is set to null, button will be disabled
-                // and the framework will automatically change the button's color
-                // to Theme.of(context).disabledColor.
-                onPressed: _isComposing
-                    ? () => _handleSubmitted(_textController.text)
-                    : null,
-              ),
-            ),
+                margin: EdgeInsets.symmetric(horizontal: 4.0),
+                // For iOS use CupertinoButton, for Android use IconButton
+                child: Theme.of(context).platform == TargetPlatform.iOS
+                    ? CupertinoButton(
+                        child: Text("Send"),
+                        onPressed: _isComposing
+                            ? () => _handleSubmitted(_textController.text)
+                            : null,
+                      )
+                    : IconButton(
+                        icon: new Icon(Icons.send),
+                        // This is triggered on button pressed.
+                        // TextEditingController keeps entered text.
+                        // Set function to be triggered, if _isComposing == true only.
+                        // If widget's onPressed property is set to null, button will be disabled
+                        // and the framework will automatically change the button's color
+                        // to Theme.of(context).disabledColor.
+                        onPressed: _isComposing
+                            ? () => _handleSubmitted(_textController.text)
+                            : null,
+                      )),
           ],
         ),
       ),
