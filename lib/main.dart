@@ -19,7 +19,10 @@ class ChatScreen extends StatefulWidget {
   State createState() => new ChatScreenState();
 }
 
-class ChatScreenState extends State<ChatScreen> {
+// TickerProviderStateMixin is needed for animation
+// (to use ChatScreenState as the vsync),
+// In Dart, a mixin allows a class body to be reused in multiple class hierarchies.
+class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   // TextEditingController is used to manage interactions with the text field
   final TextEditingController _textController = TextEditingController();
 
@@ -51,6 +54,16 @@ class ChatScreenState extends State<ChatScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    for (ChatMessage message in _messages) {
+      // It's good practice to dispose of your animation controllers
+      // to free up your resources when they are no longer needed.
+      message.animationController.dispose();
+    }
+    super.dispose();
   }
 
   Widget _buildTextComposer() {
@@ -106,6 +119,14 @@ class ChatScreenState extends State<ChatScreen> {
 
     ChatMessage message = ChatMessage(
       text: text,
+      // The AnimationController class lets you define important characteristics of the animation,
+      // such as its duration and playback direction (forward or reverse).
+      animationController: AnimationController(
+        duration: Duration(
+            milliseconds: 700), // In production set shorter duration period
+        // The vsync prevents animations that are offscreen from consuming unnecessary resources
+        vsync: this,
+      ),
     );
 
     setState(() {
@@ -115,42 +136,56 @@ class ChatScreenState extends State<ChatScreen> {
       // New message goes first
       _messages.insert(0, message);
     });
+
+    // Specify that the animation should play forward whenever a new message is added to the chat list
+    message.animationController.forward();
   }
 }
 
 class ChatMessage extends StatelessWidget {
-  ChatMessage({this.text});
+  ChatMessage({this.text, this.animationController});
 
   final String text;
+  final AnimationController animationController;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          // For the avatar, the parent is a Row widget whose main axis is horizontal,
-          // so CrossAxisAlignment.start gives it the highest position along the vertical axis.
-          Container(
-            margin: const EdgeInsets.only(right: 16.0),
-            child: CircleAvatar(child: Text(_name[0])),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              // For messages, the parent is a Column widget whose main axis is vertical,
-              // so CrossAxisAlignment.start aligns the text at the furthest left position
-              // along the horizontal axis.
-              // Using current theme allows us to avoid hard-coding font sizes and other text attributes.
-              Text(_name, style: Theme.of(context).textTheme.subhead),
-              Container(
-                margin: const EdgeInsets.only(top: 5.0),
-                child: Text(text),
-              ),
-            ],
-          ),
-        ],
+    // The SizeTransition class provides an animation effect where the width or height
+    // of its child is multiplied by a given size factor value.
+    return SizeTransition(
+      sizeFactor:
+          // The CurvedAnimation object, in conjunction with the SizeTransition class,
+          // produces an ease-out animation effect. The ease-out effect causes the message
+          // to slide in quickly at the beginning of the animation and slow down until it comes to a stop.
+          CurvedAnimation(parent: animationController, curve: Curves.easeOut),
+      axisAlignment: 0.0,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 10.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            // For the avatar, the parent is a Row widget whose main axis is horizontal,
+            // so CrossAxisAlignment.start gives it the highest position along the vertical axis.
+            Container(
+              margin: const EdgeInsets.only(right: 16.0),
+              child: CircleAvatar(child: Text(_name[0])),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                // For messages, the parent is a Column widget whose main axis is vertical,
+                // so CrossAxisAlignment.start aligns the text at the furthest left position
+                // along the horizontal axis.
+                // Using current theme allows us to avoid hard-coding font sizes and other text attributes.
+                Text(_name, style: Theme.of(context).textTheme.subhead),
+                Container(
+                  margin: const EdgeInsets.only(top: 5.0),
+                  child: Text(text),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
